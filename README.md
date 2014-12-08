@@ -18,6 +18,9 @@ In the browser, use dist/generator-utils.js:
 
 ## Usage
 
+In a node.js environment, `require('generator-utils')`. In the browser it acts
+as a UMD exporter with a global name of `GU`.
+
 \# <b>concat</b>(generators)
 
 Creates a new generator yielding all in-order combinations of values from
