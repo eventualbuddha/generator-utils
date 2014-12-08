@@ -1,0 +1,27 @@
+{
+  "name": "generator-utils",
+  "version": "1.0.0",
+  "description": "Functions to work with JavaScript generators.",
+  "main": "dist/generator-utils.js",
+  "jsnext:main": "lib/index.js",
+  "scripts": {
+    "test": "mocha --recursive test"
+  },
+  "keywords": [
+    "generator",
+    "function*",
+    "map",
+    "filter"
+  ],
+  "files": [
+    "dist/generator-utils.js",
+    "lib/index.js"
+  ],
+  "author": "Brian Donovan",
+  "license": "MIT",
+  "devDependencies": {
+    "broccoli": "^0.13.3",
+    "broccoli-compile-modules": "^1.1.0",
+    "mocha": "^2.0.1"
+  }
+}
