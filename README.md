@@ -21,7 +21,7 @@ In the browser, use dist/generator-utils.js:
 In a node.js environment, `require('generator-utils')`. In the browser it acts
 as a UMD exporter with a global name of `GU`.
 
-\# <b>concat</b>(generators)
+\# <b>combine</b>(generators)
 
 Creates a new generator yielding all in-order combinations of values from
 the given generators. All values from all generators will be read, so do not
