@@ -1,68 +1,75 @@
-(function() {
-    "use strict";
-
-    var $$index$$ = {
-        get combine() {
-            return $$index$$combine;
-        },
-
-        get concat() {
-            return $$index$$concat;
-        },
-
-        get filter() {
-            return $$index$$filter;
-        },
-
-        get filterMap() {
-            return $$index$$filterMap;
-        },
-
-        get forEach() {
-            return $$index$$forEach;
-        },
-
-        get fromArray() {
-            return $$index$$fromArray;
-        },
-
-        get map() {
-            return $$index$$map;
-        },
-
-        get range() {
-            return $$index$$range;
-        },
-
-        get take() {
-            return $$index$$take;
-        },
-
-        get toArray() {
-            return $$index$$toArray;
-        }
+(function (global, factory) {
+  if (typeof define === "function" && define.amd) {
+    define(["exports"], factory);
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
     };
+    factory(mod.exports);
+    global.index = mod.exports;
+  }
+})(this, function (exports) {
+  /**
+   * Creates a new generator yielding all in-order combinations of values from
+   * the given generators. All values from all generators will be read, so do not
+   * use this with infinite generators.
+   *
+   * @example
+   *
+   *   toArray(combine([range(0, 1), range(4, 5)]))
+   *   // [[0, 4], [0, 5], [1, 4], [1, 5]]
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}[]} generators
+   * @returns {{next: (function(): {value: ?T, done: boolean})}}
+   * @template T
+   */
+  "use strict";
 
-    function $$index$$combine(generators) {
-      switch (generators.length) {
-        case 0:
-          return {
-            next: function() {
-              return { value: null, done: true };
-            }
-          };
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.combine = combine;
+  exports.concat = concat;
+  exports.filter = filter;
+  exports.filterMap = filterMap;
+  exports.forEach = forEach;
+  exports.fromArray = fromArray;
+  exports.map = map;
+  exports.flatten = flatten;
+  exports.range = range;
+  exports.take = take;
+  exports.toArray = toArray;
 
-        case 1:
-          return $$index$$map(generators[0], function(value) { return [value]; });
+  function combine(generators) {
+    switch (generators.length) {
+      case 0:
+        return {
+          next: function next() {
+            return { value: null, done: true };
+          }
+        };
 
-        case 2:
-          var left = generators[0];
-          var allRight = $$index$$toArray(generators[1]);
-          var leftIteration;
-          var rightOffset = 0;
+      case 1:
+        return map(generators[0], function (value) {
+          return [value];
+        });
 
-          return {
-            next: function next() {
+      case 2:
+        var left = generators[0];
+        var allRight = toArray(generators[1]);
+        var leftIteration;
+        var rightOffset = 0;
+
+        return {
+          next: function next() {
+            var _again = true;
+
+            _function: while (_again) {
+              nextRight = undefined;
+              _again = false;
+
               if (!leftIteration) {
                 leftIteration = left.next();
               }
@@ -78,40 +85,60 @@
               } else {
                 leftIteration = null;
                 rightOffset = 0;
-                return next();
+                _again = true;
+                continue _function;
               }
             }
-          };
+          }
+        };
 
-        default:
-          return $$index$$map(
-            $$index$$combine([generators[0], $$index$$combine(generators.slice(1))]),
-            function(headAndTail) {
-              var head = headAndTail[0];
-              var tail = headAndTail[1].slice();
-              tail.unshift(head);
-              return tail;
-            }
-          );
-      }
+      default:
+        return map(combine([generators[0], combine(generators.slice(1))]), function (headAndTail) {
+          var head = headAndTail[0];
+          var tail = headAndTail[1].slice();
+          tail.unshift(head);
+          return tail;
+        });
     }
+  }
 
-    function $$index$$concat(generators) {
-      switch (generators.length) {
-        case 0:
-          return {
-            next: function() {
-              return { value: null, done: true };
-            }
-          };
+  /**
+   * Returns a generator yielding all the values from the given generators in
+   * order. If any generators are infinite generators none of the values from
+   * subsequent generators will be read.
+   *
+   * @example
+   *
+   *   toArray(concat([range(0, 1), range(4, 5)]))
+   *   // [0, 1, 4, 5]
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}[]} generators
+   * @returns {{next: (function(): {value: ?T, done: boolean})}}
+   * @template T
+   */
 
-        case 1:
-          return generators[0];
+  function concat(generators) {
+    switch (generators.length) {
+      case 0:
+        return {
+          next: function next() {
+            return { value: null, done: true };
+          }
+        };
 
-        default:
-          var offset = 0;
-          return {
-            next: function next() {
+      case 1:
+        return generators[0];
+
+      default:
+        var offset = 0;
+        return {
+          next: function next() {
+            var _again2 = true;
+
+            _function2: while (_again2) {
+              iteration = undefined;
+              _again2 = false;
+
               if (offset >= generators.length) {
                 return { value: null, done: true };
               }
@@ -120,18 +147,42 @@
 
               if (iteration.done) {
                 offset++;
-                return next();
+                _again2 = true;
+                continue _function2;
               }
 
               return iteration;
             }
-          };
-      }
+          }
+        };
     }
+  }
 
-    function $$index$$filter(generator, predicate) {
-      return {
-        next: function next() {
+  /**
+   * Returns a generator that yields values from another generator passing a
+   * predicate. This may be used with infinite generators, though care should be
+   * taken to ensure that the predicate does not return false for all values.
+   *
+   * @example
+   *
+   *   toArray(filter(range(0, 5), x => x % 2 === 0))
+   *   // [0, 2, 4]
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}} generator
+   * @param {function(T): boolean} predicate
+   * @returns {{next: (function(): {value: ?T, done: boolean})}}
+   * @template T
+   */
+
+  function filter(generator, predicate) {
+    return {
+      next: function next() {
+        var _again3 = true;
+
+        _function3: while (_again3) {
+          iteration = undefined;
+          _again3 = false;
+
           var iteration = generator.next();
 
           if (iteration.done) {
@@ -139,17 +190,46 @@
           }
 
           if (!predicate(iteration.value)) {
-            return next();
+            _again3 = true;
+            continue _function3;
           }
 
           return iteration;
         }
-      };
-    }
+      }
+    };
+  }
 
-    function $$index$$filterMap(generator, transform) {
-      return {
-        next: function next() {
+  /**
+   * Combines `filter` and `map` in one transform. Instead of returning false,
+   * filtering is done by calling the `skip` function passed as the second
+   * argument to transform.
+   *
+   * @example
+   *
+   *   toArray(filter(range(0, 5), (x, skip) => (x % 2 === 0) ? skip() : x * x))
+   *   // [1, 9, 25]
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}} generator
+   * @param {function(T, function()): boolean} transform
+   * @returns {{next: (function(): {value: ?T, done: boolean})}}
+   * @template T
+   */
+
+  function filterMap(generator, transform) {
+    return {
+      next: function next() {
+        var _again4 = true;
+
+        _function4: while (_again4) {
+          iteration = skipped = undefined;
+
+          var skip = function skip() {
+            skipped = true;
+          };
+
+          _again4 = false;
+
           var iteration = generator.next();
 
           if (iteration.done) {
@@ -157,100 +237,214 @@
           }
 
           var skipped = false;
-          function skip() { skipped = true; }
 
           iteration.value = transform(iteration.value, skip);
 
           if (skipped) {
-            return next();
+            _again4 = true;
+            continue _function4;
           }
 
           return iteration;
         }
-      };
-    }
-
-    function $$index$$forEach(generator, iterator) {
-      for (var iteration; !(iteration = generator.next()).done;) {
-        iterator(iteration.value);
       }
-    }
+    };
+  }
 
-    function $$index$$fromArray(array) {
-      var offset = 0;
-      return {
-        next: function() {
-          if (offset < array.length) {
-            return { value: array[offset++], done: false };
-          } else {
-            return { value: null, done: true };
-          }
+  /**
+   * Calls a function for each value in a generator.
+   *
+   * @example
+   *
+   *   forEach(range(1, 4), console.log)
+   *   // prints "1\n2\n3\n4\n"
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}} generator
+   * @param {function(T)} iterator
+   * @template T
+   */
+
+  function forEach(generator, iterator) {
+    for (var iteration; !(iteration = generator.next()).done;) {
+      iterator(iteration.value);
+    }
+  }
+
+  /**
+   * Returns a generator yielding the values from the given array in order.
+   *
+   * @example
+   *
+   *   toArray(fromArray([1, 2, 3]))
+   *   // [1, 2, 3]
+   *
+   * @param {T[]} array
+   * @returns {{next: (function(): {value: ?T, done: boolean})}}
+   * @template T
+   * @private
+   */
+
+  function fromArray(array) {
+    var offset = 0;
+    return {
+      next: function next() {
+        if (offset < array.length) {
+          return { value: array[offset++], done: false };
+        } else {
+          return { value: null, done: true };
         }
-      };
-    }
+      }
+    };
+  }
 
-    function $$index$$map(generator, transformer) {
-      return {
-        next: function next() {
-          var iteration = generator.next();
+  /**
+   * Maps one generator to another by passing all values through a transformer.
+   *
+   * @example
+   *
+   *   toArray(map(range(2, 5), x => x * 2))
+   *   // [4, 6, 8, 10]
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}} generator
+   * @param {function(T, function()=): U} transformer
+   * @returns {{next: (function(): {value: ?U, done: boolean})}}
+   * @template T
+   * @template U
+   */
 
-          if (iteration.done) {
-            return iteration;
-          }
-
-          return { value: transformer(iteration.value), done: false };
-        }
-      };
-    }
-
-    function $$index$$range(min, max) {
-      var i = min;
-      return {
-        next: function() {
-          if (i <= max) {
-            return { value: i++, done: false };
-          } else {
-            return { value: null, done: true };
-          }
-        }
-      };
-    }
-
-    function $$index$$take(generator, count) {
-      var result = [];
-
-      while (count-- > 0) {
+  function map(generator, transformer) {
+    return {
+      next: function next() {
         var iteration = generator.next();
 
         if (iteration.done) {
-          break;
+          return iteration;
         }
 
-        result.push(iteration.value);
+        return { value: transformer(iteration.value), done: false };
+      }
+    };
+  }
+
+  /**
+   * Maps one generator to another by passing all values through a transformer.
+   *
+   * @example
+   *
+   *   toArray(map(range(2, 5), x => x * 2))
+   *   // [4, 6, 8, 10]
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}} generator
+   * @param {function(T, function()=): U} transformer
+   * @returns {{next: (function(): {value: ?U, done: boolean})}}
+   * @template T
+   * @template U
+   */
+
+  function flatten(generator) {
+    var needgenerator = true;
+    var subgenerator;
+    return {
+      next: function next() {
+        for (;;) {
+          if (needgenerator) {
+            var subiterator = generator.next();
+            if (subiterator.done) {
+              return { done: true };
+            }
+            subgenerator = subiterator.value;
+            needgenerator = false;
+          }
+          var iteration = subgenerator.next();
+          if (iteration.done) {
+            needgenerator = true;
+          } else {
+            return iteration;
+          }
+        }
+      }
+    };
+  }
+
+  /**
+   * Returns a generator yielding values from min up to and including max.
+   *
+   * @example
+   *
+   *   toArray(range(8, 10))
+   *   // [8, 9, 10]
+   *
+   * @param {number} min
+   * @param {number} max
+   * @returns {{next: (function(): {value: ?number, done: boolean})}}
+   */
+
+  function range(min, max) {
+    var i = min;
+    return {
+      next: function next() {
+        if (i <= max) {
+          return { value: i++, done: false };
+        } else {
+          return { value: null, done: true };
+        }
+      }
+    };
+  }
+
+  /**
+   * Returns up to the first count values of a generator.
+   *
+   * @example
+   *
+   *   take(range(10, 20), 3)
+   *   // [10, 11, 12]
+   *
+   * @param generator
+   * @param count
+   * @returns {Array}
+   */
+
+  function take(generator, count) {
+    var result = [];
+
+    while (count-- > 0) {
+      var iteration = generator.next();
+
+      if (iteration.done) {
+        break;
       }
 
-      return result;
+      result.push(iteration.value);
     }
 
-    function $$index$$toArray(generator) {
-      var results = [];
+    return result;
+  }
 
-      $$index$$forEach(generator, function(value) {
-        results.push(value);
-      });
+  /**
+   * Reads all values from a generator and returns an array containing them. Be
+   * careful not to use this with infinite generators, as it will never return and
+   * your program will eventually run out of memory.
+   *
+   * @example
+   *
+   *   toArray(range(7, 9))
+   *   // [7, 8, 9]
+   *
+   * @param {{next: (function(): {value: ?T, done: boolean})}} generator
+   * @returns {T[]}
+   * @template T
+   */
 
-      return results;
-    }
+  function toArray(generator) {
+    var results = [];
 
-    if (typeof module !== 'undefined' && module.exports) {
-      module.exports = $$index$$;
-    } else if (typeof define === 'function' && define.amd) {
-      define(function() { return $$index$$; });
-    } else if (typeof window !== 'undefined') {
-      window.GU = $$index$$;
-    } else if (this) {
-      this.GU = $$index$$;
-    }
-}).call(this);
+    forEach(generator, function (value) {
+      results.push(value);
+    });
+
+    return results;
+  }
+});
 
 //# sourceMappingURL=generator-utils.js.map

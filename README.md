@@ -99,6 +99,16 @@ toArray(map(range(2, 5), x => x * 2))
 ```
 
 
+\# <b>flatten</b>(generator)
+
+Makes a generator from a generator producing other generators. 
+
+```js
+toArray(flatten(fromArray([range(2, 5), range(6,7))))
+// [2,3,4,5,6,7]
+```
+
+
 \# <b>range</b>(min, max)
 
 Returns a generator yielding values from min up to and including max.

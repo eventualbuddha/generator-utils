@@ -9,13 +9,16 @@
   },
   "jsnext:main": "lib/index.js",
   "scripts": {
+    "prepublish": "npm test",
+    "pretest": "babel --modules umd lib/index.js --source-maps -o dist/generator-utils.js",
     "test": "mocha --recursive test"
   },
   "keywords": [
     "generator",
     "function*",
     "map",
-    "filter"
+    "filter",
+    "flatten"
   ],
   "files": [
     "dist/generator-utils.js",
@@ -24,8 +27,7 @@
   "author": "Brian Donovan",
   "license": "MIT",
   "devDependencies": {
-    "broccoli": "^0.13.3",
-    "broccoli-compile-modules": "^1.1.0",
+    "babel": "^5.4.7",
     "mocha": "^2.0.1"
   }
 }
