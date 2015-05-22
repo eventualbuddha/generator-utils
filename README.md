@@ -74,8 +74,8 @@ toArray(filter(range(0, 5), (x, skip) => (x % 2 === 0) ? skip() : x * x))
 Makes a generator from a generator producing other generators. 
 
 ```js
-toArray(flatten(fromArray([range(2, 5), range(6,7))))
-// [2,3,4,5,6,7]
+toArray(flatten(fromArray([range(2, 5), range(6, 7))))
+// [2, 3, 4, 5, 6, 7]
 ```
 
 
