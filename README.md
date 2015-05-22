@@ -69,6 +69,16 @@ toArray(filter(range(0, 5), (x, skip) => (x % 2 === 0) ? skip() : x * x))
 ```
 
 
+\# <b>flatten</b>(generator)
+
+Makes a generator from a generator producing other generators. 
+
+```js
+toArray(flatten(fromArray([range(2, 5), range(6,7))))
+// [2,3,4,5,6,7]
+```
+
+
 \# <b>forEach</b>(generator, iterator)
 
 Calls a function for each value in a generator.

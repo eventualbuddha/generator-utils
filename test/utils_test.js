@@ -130,6 +130,18 @@ describe('generator-utils', function() {
     });
   });
 
+  describe('flatten', function() {
+    it('allows unwrapping generators to values', function() {
+      const gens = [gu.range(0,0), gu.range(2,4)];
+      const numbers = gu.flatten(gu.fromArray(gens));
+      assert.strictEqual(numbers.next().value, 0);
+      assert.strictEqual(numbers.next().value, 2);
+      assert.strictEqual(numbers.next().value, 3);
+      assert.strictEqual(numbers.next().value, 4);
+      assert.strictEqual(numbers.next().done, true);
+    });
+  });
+
   describe('range', function() {
     it('returns a generator from N to M', function() {
       const zeroThroughThree = gu.range(0, 3);
