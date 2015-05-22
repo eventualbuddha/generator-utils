@@ -59,7 +59,7 @@
       case 2:
         var left = generators[0];
         var allRight = toArray(generators[1]);
-        var leftIteration;
+        var leftIteration = undefined;
         var rightOffset = 0;
 
         return {
@@ -93,11 +93,10 @@
         };
 
       default:
-        return map(combine([generators[0], combine(generators.slice(1))]), function (headAndTail) {
-          var head = headAndTail[0];
-          var tail = headAndTail[1].slice();
-          tail.unshift(head);
-          return tail;
+        return map(combine([generators[0], combine(generators.slice(1))]), function (_ref) {
+          var head = _ref[0];
+          var tail = _ref[1];
+          return [head].concat(tail);
         });
     }
   }
@@ -211,7 +210,7 @@
    *   // [1, 9, 25]
    *
    * @param {{next: (function(): {value: ?T, done: boolean})}} generator
-   * @param {function(T, function()): boolean} transform
+   * @param {function(T, function()): ?T} transform
    * @returns {{next: (function(): {value: ?T, done: boolean})}}
    * @template T
    */
@@ -266,14 +265,14 @@
 
   function flatten(generator) {
     var needsGenerator = true;
-    var subGenerator;
+    var subGenerator = undefined;
     return {
       next: function next() {
         for (;;) {
           if (needsGenerator) {
             var subIterator = generator.next();
             if (subIterator.done) {
-              return { done: true };
+              return { value: null, done: true };
             }
             subGenerator = subIterator.value;
             needsGenerator = false;
@@ -303,7 +302,7 @@
    */
 
   function forEach(generator, iterator) {
-    for (var iteration; !(iteration = generator.next()).done;) {
+    for (var iteration = undefined; !(iteration = generator.next()).done;) {
       iterator(iteration.value);
     }
   }
@@ -436,11 +435,9 @@
 
   function toArray(generator) {
     var results = [];
-
     forEach(generator, function (value) {
-      results.push(value);
+      return results.push(value);
     });
-
     return results;
   }
 });
