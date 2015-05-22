@@ -34,10 +34,10 @@
   exports.concat = concat;
   exports.filter = filter;
   exports.filterMap = filterMap;
+  exports.flatten = flatten;
   exports.forEach = forEach;
   exports.fromArray = fromArray;
   exports.map = map;
-  exports.flatten = flatten;
   exports.range = range;
   exports.take = take;
   exports.toArray = toArray;
@@ -252,6 +252,44 @@
   }
 
   /**
+   * Makes a generator from a generator producing other generators.
+   *
+   * @example
+   *
+   *   toArray(flatten(fromArray([range(2, 5), range(6,7))))
+   *   // [2,3,4,5,6,7]
+   *
+   * @param {{next: (function(): {value: ?{next: (function(): {value: ?T, done: boolean})}, done: boolean})}} generator
+   * @returns {{next: (function(): {value: ?T, done: boolean})}}
+   * @template T
+   */
+
+  function flatten(generator) {
+    var needsGenerator = true;
+    var subGenerator;
+    return {
+      next: function next() {
+        for (;;) {
+          if (needsGenerator) {
+            var subIterator = generator.next();
+            if (subIterator.done) {
+              return { done: true };
+            }
+            subGenerator = subIterator.value;
+            needsGenerator = false;
+          }
+          var iteration = subGenerator.next();
+          if (iteration.done) {
+            needsGenerator = true;
+          } else {
+            return iteration;
+          }
+        }
+      }
+    };
+  }
+
+  /**
    * Calls a function for each value in a generator.
    *
    * @example
@@ -322,46 +360,6 @@
         }
 
         return { value: transformer(iteration.value), done: false };
-      }
-    };
-  }
-
-  /**
-   * Maps one generator to another by passing all values through a transformer.
-   *
-   * @example
-   *
-   *   toArray(map(range(2, 5), x => x * 2))
-   *   // [4, 6, 8, 10]
-   *
-   * @param {{next: (function(): {value: ?T, done: boolean})}} generator
-   * @param {function(T, function()=): U} transformer
-   * @returns {{next: (function(): {value: ?U, done: boolean})}}
-   * @template T
-   * @template U
-   */
-
-  function flatten(generator) {
-    var needgenerator = true;
-    var subgenerator;
-    return {
-      next: function next() {
-        for (;;) {
-          if (needgenerator) {
-            var subiterator = generator.next();
-            if (subiterator.done) {
-              return { done: true };
-            }
-            subgenerator = subiterator.value;
-            needgenerator = false;
-          }
-          var iteration = subgenerator.next();
-          if (iteration.done) {
-            needgenerator = true;
-          } else {
-            return iteration;
-          }
-        }
       }
     };
   }
