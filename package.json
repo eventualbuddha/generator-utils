@@ -10,7 +10,7 @@
   "jsnext:main": "lib/index.js",
   "scripts": {
     "prepublish": "npm test",
-    "pretest": "babel --modules umd lib/index.js --source-maps -o dist/generator-utils.js --loose es6.spread,es6.destructuring",
+    "pretest": "babel --modules umd --module-id GU lib/index.js --source-maps -o dist/generator-utils.js --loose es6.spread,es6.destructuring",
     "test": "mocha --recursive test"
   },
   "keywords": [
