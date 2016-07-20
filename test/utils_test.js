@@ -1,4 +1,4 @@
-const gu = require('../dist/generator-utils');
+const gu = require('../');
 const assert = require('assert');
 
 describe('generator-utils', function() {
