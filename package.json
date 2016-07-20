@@ -1,6 +1,5 @@
 {
   "name": "generator-utils",
-  "version": "1.1.1",
   "description": "Functions to work with JavaScript generators.",
   "main": "dist/generator-utils.js",
   "repository": {
@@ -11,7 +10,8 @@
   "scripts": {
     "prepublish": "npm test",
     "pretest": "babel --modules umd --module-id GU lib/index.js --source-maps -o dist/generator-utils.js --loose es6.spread,es6.destructuring",
-    "test": "mocha --recursive test"
+    "test": "mocha --recursive test",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "keywords": [
     "generator",
@@ -28,6 +28,7 @@
   "license": "MIT",
   "devDependencies": {
     "babel": "^5.4.7",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "semantic-release": "^4.3.5"
   }
 }
