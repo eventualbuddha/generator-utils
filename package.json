@@ -2,15 +2,17 @@
   "name": "generator-utils",
   "description": "Functions to work with JavaScript generators.",
   "main": "dist/generator-utils.js",
+  "jsnext:main": "dist/generator-utils.mjs",
   "repository": {
     "type": "git",
     "url": "https://github.com/eventualbuddha/generator-utils.git"
   },
-  "jsnext:main": "lib/index.js",
   "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "rollup -c",
     "prepublish": "npm test",
-    "pretest": "babel --modules umd --module-id GU lib/index.js --source-maps -o dist/generator-utils.js --loose es6.spread,es6.destructuring",
-    "test": "mocha --recursive test",
+    "pretest": "npm run build",
+    "test": "mocha",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "keywords": [
@@ -21,14 +23,17 @@
     "flatten"
   ],
   "files": [
-    "dist/generator-utils.js",
-    "lib/index.js"
+    "dist/"
   ],
   "author": "Brian Donovan",
   "license": "MIT",
   "devDependencies": {
-    "babel": "^5.4.7",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-es2015-rollup": "^1.1.1",
+    "babelrc-rollup": "^2.0.0",
     "mocha": "^2.2.5",
+    "rollup": "^0.34.1",
+    "rollup-plugin-babel": "^2.6.1",
     "semantic-release": "^4.3.5"
   }
 }
