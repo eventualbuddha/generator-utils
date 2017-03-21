@@ -1,5 +1,7 @@
 # generator-utils
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/eventualbuddha/generator-utils.svg)](https://greenkeeper.io/)
+
 Utility functions for manipulating [generators] as lazy sequences.
 
 ## Install
