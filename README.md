@@ -4,22 +4,16 @@ Utility functions for manipulating [generators] as lazy sequences.
 
 ## Install
 
-Via npm:
-
-```
+```bash
+# via yarn
+$ yarn add generator-utils
+# via npm
 $ npm install generator-utils
-```
-
-In the browser, use dist/generator-utils.js:
-
-```html
-<script type="application/javascript" src="generator-utils.js"></script>
 ```
 
 ## Usage
 
-In a node.js environment, `require('generator-utils')`. In the browser it acts
-as a UMD exporter with a global name of `GU`.
+In a node.js environment, e.g. `import { filter } from 'generator-utils';` or `const { filter } = require('generator-utils');`.
 
 \# <b>combine</b>(generators)
 
