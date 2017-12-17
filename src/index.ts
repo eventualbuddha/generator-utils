@@ -19,17 +19,6 @@ export function *combine<T>(generators: Array<IterableIterator<T>>): IterableIte
       }
       break;
 
-    // case 2:
-    //   let [left, right] = generators;
-    //   let rightValues = Array.from(right);
-
-    //   for (let leftValue of left) {
-    //     for (let rightValue of rightValues) {
-    //       yield [leftValue, rightValue];
-    //     }
-    //   }
-    //   break;
-
     default:
       let [head, ...tail] = generators;
       let headValues = Array.from(head);

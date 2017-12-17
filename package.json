@@ -24,7 +24,11 @@
   "engines": {
     "node": ">=4"
   },
-  "files": [],
+  "files": [
+    "src/index.js",
+    "src/index.d.ts",
+    "src/index.js.map"
+  ],
   "author": "Brian Donovan",
   "license": "MIT",
   "devDependencies": {
