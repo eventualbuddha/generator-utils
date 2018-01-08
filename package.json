@@ -33,7 +33,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/mocha": "^2.2.44",
-    "@types/node": "^8.5.1",
+    "@types/node": "^9.3.0",
     "mocha": "^4.0.1",
     "semantic-release": "^8.2.0",
     "ts-node": "^4.0.2",
