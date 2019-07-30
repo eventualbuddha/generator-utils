@@ -7,7 +7,7 @@ node_js:
   - '10'
   - '8'
 script:
-  - yarn test
+  - yarn jest --ci
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
@@ -18,6 +18,6 @@ jobs:
       deploy:
         provider: script
         skip_cleanup: true
-        script: 'yarn install && yarn build && npx semantic-release'
+        script: 'npx semantic-release'
         on:
           branch: master

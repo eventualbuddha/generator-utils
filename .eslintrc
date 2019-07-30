@@ -1,0 +1,37 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
+  "env": {
+    "es6": true
+  },
+  "plugins": ["prettier", "@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/array-type": ["error", "generic"],
+    "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
+    "@typescript-eslint/no-use-before-define": ["error", { "functions": false }],
+    "prettier/prettier": "error",
+    "sort-imports": "error"
+  },
+  "overrides": [
+    {
+      "files": "**/__tests__/**/*.ts",
+      "extends": "plugin:jest/all",
+      "plugins": ["jest"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "jest/no-if": "off",
+        "jest/prefer-expect-assertions": "off"
+      }
+    }
+  ]
+}
