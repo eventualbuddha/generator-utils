@@ -14,9 +14,15 @@
   },
   "plugins": ["prettier", "@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/array-type": ["error", "generic"],
-    "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
-    "@typescript-eslint/no-use-before-define": ["error", { "functions": false }],
+    "@typescript-eslint/array-type": ["error", { "default": "generic" }],
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      { "allowExpressions": true }
+    ],
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      { "functions": false }
+    ],
     "prettier/prettier": "error",
     "sort-imports": "error"
   },

@@ -259,7 +259,7 @@ export function copy<T>(iterable: Iterable<T>): Iterable<T> {
 
     return {
       done: index > maxIndex,
-      value: values[index]
+      value: values[index],
     };
   }
 
@@ -272,10 +272,10 @@ export function copy<T>(iterable: Iterable<T>): Iterable<T> {
         next(): IteratorResult<T> {
           const result = getIteratorResultAtIndex(indexes[id]++);
           return result;
-        }
+        },
       };
 
       return iterators[id];
-    }
+    },
   };
 }
