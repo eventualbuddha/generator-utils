@@ -10,7 +10,7 @@ import {
   map,
   range,
   take,
-  toArray
+  toArray,
 } from '..';
 
 describe('generator-utils', () => {
@@ -26,7 +26,12 @@ describe('generator-utils', () => {
 
     it('returns a new generator yielding pairs of all values when given two generators', () => {
       const pairs = combine([range(0, 1), range(3, 4)]);
-      expect(Array.from(pairs)).toStrictEqual([[0, 3], [0, 4], [1, 3], [1, 4]]);
+      expect(Array.from(pairs)).toStrictEqual([
+        [0, 3],
+        [0, 4],
+        [1, 3],
+        [1, 4],
+      ]);
     });
 
     it('returns a new generator yielding tuples of all values when given many generators', () => {
@@ -39,7 +44,7 @@ describe('generator-utils', () => {
         [1, 3, 6],
         [1, 3, 7],
         [1, 4, 6],
-        [1, 4, 7]
+        [1, 4, 7],
       ]);
     });
 
@@ -87,7 +92,7 @@ describe('generator-utils', () => {
 
   describe('filter', () => {
     it('allows skipping values', () => {
-      const evens = filter(naturalNumbers(), function(n) {
+      const evens = filter(naturalNumbers(), function (n) {
         return n % 2 === 0;
       });
 
@@ -97,7 +102,7 @@ describe('generator-utils', () => {
 
   describe('filterMap', () => {
     it('allows skipping values and mapping at the same time', () => {
-      const negativeOdds = filterMap(naturalNumbers(), function(n, skip) {
+      const negativeOdds = filterMap(naturalNumbers(), function (n, skip) {
         if (n % 2 === 0) {
           skip();
         } else {
@@ -111,9 +116,9 @@ describe('generator-utils', () => {
 
   describe('forEach', () => {
     it('calls the given iterator function with each generator value', () => {
-      let values: Array<number> = [];
+      const values: Array<number> = [];
 
-      forEach(range(2, 5), value => {
+      forEach(range(2, 5), (value) => {
         values.push(value);
       });
 
@@ -137,7 +142,7 @@ describe('generator-utils', () => {
 
   describe('map', () => {
     it('allows changing each value of a generator into another value', () => {
-      const doubleNaturalNumbers = map(naturalNumbers(), function(n) {
+      const doubleNaturalNumbers = map(naturalNumbers(), function (n) {
         return n * 2;
       });
 
