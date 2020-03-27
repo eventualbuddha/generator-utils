@@ -3,3 +3,8 @@ node_modules/
 *.d.ts
 *.js.map
 !*.config.js
+
+# yarn
+!.yarn/**/*
+.yarn/unplugged
+.yarn/build-state.yml
